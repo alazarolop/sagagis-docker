@@ -8,3 +8,5 @@ saga_cmd() {
     "$SAGA_IMAGE" \
     saga_cmd "$@"
 }
+
+export -f saga_cmd
