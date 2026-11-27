@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker build -t alazarolop/sagagis:7.6.3 .
+docker build -t ghcr.io/alazarolop/sagagis:9.14.3 .
