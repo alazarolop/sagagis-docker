@@ -62,31 +62,41 @@ docker run --rm \
 
 ## Using as a Local Command
 
-To use the container as if SAGA GIS was installed locally, add the following function to your `~/.bashrc`:
+To use the container as if SAGA GIS were installed natively on the host system, install a lightweight wrapper script in `/usr/local/bin`.
+
+Create the wrapper:
 
 ```bash
-saga_cmd() {
-    docker run --rm \
-        -u "$(id -u):$(id -g)" \
-        -v "$PWD":"$PWD" \
-        -w "$PWD" \
-        ghcr.io/alazarolop/sagagis:latest \
-        saga_cmd "$@"
-}
+sudo tee /usr/local/bin/saga_cmd > /dev/null <<'EOF'
+#!/usr/bin/env bash
+
+docker run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v "$PWD":"$PWD" \
+    -w "$PWD" \
+    ghcr.io/alazarolop/sagagis:latest \
+    saga_cmd "$@"
+EOF
+
+sudo chmod +x /usr/local/bin/saga_cmd
 ```
 
-Reload your shell:
+Verify the installation:
 
 ```bash
-source ~/.bashrc
+saga_cmd --version
 ```
 
-You can then invoke SAGA GIS exactly as you would a native installation:
+Once installed, SAGA GIS can be used exactly as if it were available locally:
 
 ```bash
 saga_cmd --version
 
 saga_cmd ta_morphometry 0
+
+saga_cmd ta_lighting 0 \
+    -DEM dem.tif \
+    -SHADE hillshade.tif
 ```
 
 You can also make it available to all users by copying the `sagagis.sh` file to `/etc/profile.d/`.
